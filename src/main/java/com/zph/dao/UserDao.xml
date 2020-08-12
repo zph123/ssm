@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zph.dao.UserDao">
+    <select id="selectUserByNameAndPassword" resultType="com.zph.domain.User">
+        select id,name from user where name=#{name} and password=#{password}
+    </select>
+
+    <select id="selectArticleForUser" resultMap="resultArticleMap">
+        select u.id user_id,u.name,a.id article_id,a.title,a.content,a.createAt from user as u
+        left join article as a on a.user_id=u.id
+        where u.id = #{id}
+    </select>
+    <resultMap type="User" id="resultArticleMap">
+        <result property="id" column="user_id" />
+        <result property="name" column="name" />
+        <collection property="article" ofType="Article">
+            <id property="id" column="article_id"/>
+            <result property="title" column="title"/>
+            <result property="content" column="content" />
+            <result property="createAt" column="createAt" />
+        </collection>
+    </resultMap>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zph.dao.ArticleDao">
+    <select id="selectArticle" resultMap="resultArticleMap">
+        select a.id,a.title,a.content,a.createAt,t.id as tag_id,t.name as tag_name,u.id as user_id,u.name from article a
+        left outer join user u on a.user_id = u.id
+        left outer join article_and_tag as a_t on a.id = a_t.article_id
+        left outer join tag t on t.id = a_t.tag_id
+        <where>
+            <if test="title != null">
+                title like "%" #{title} "%"
+            </if>
+            <if test="content != null">
+                AND content like "%" #{content} "%"
+            </if>
+            <if test="startCreateAt != null">
+                AND createAt &gt;= #{startCreateAt}
+            </if>
+            <if test="endCreateAt != null">
+                AND createAt &lt;= #{endCreateAt}
+            </if>
+        </where>
+    </select>
+    <resultMap type="Article" id="resultArticleMap">
+        <result property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="createAt" column="createAt" />
+        <association property="user" javaType="User">
+            <id property="id" column="user_id"/>
+            <result property="name" column="name"/>
+        </association>
+        <collection property="tags" ofType="Tag">
+            <result property="id" column="tag_id"/>
+            <result property="name" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <insert id="addArticle" useGeneratedKeys="true" keyProperty="id">
+        insert into article (title,content,createAt,user_id)
+        values(#{title},#{content},#{createAt},#{userId})
+    </insert>
+
+    <update id="updateArticleById">
+        update article
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+        </set>
+        where id = #{id} and user_id = #{userId}
+    </update>
+
+    <delete id="deleteArticleById">
+        delete from article where id = #{id} and user_id = #{userId}
+    </delete>
+</mapper>

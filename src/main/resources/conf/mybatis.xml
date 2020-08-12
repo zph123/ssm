@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--日志,需要请放开注释-->
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"></setting>
+    </settings>
+
+    <typeAliases>
+        <!-- name:实体类所在的包名（不是实体类的包名也可以） -->
+        <package name="com.zph.domain"/>
+    </typeAliases>
+
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- 详细配置项 -->
+        </plugin>
+    </plugins>
+
+    <!-- sql mapper(sql映射文件的位置)-->
+    <mappers>
+        <!--
+        一个mappers标签指定一个文件的位置，从类库经开始的位置信息
+        1.mapper文件名称和dao接口名必须完全一致
+        2.mapper文件和dao接口必须在同一目录
+        -->
+        <package name="com.zph.dao"/>
+    </mappers>
+</configuration>
